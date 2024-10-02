@@ -8,9 +8,163 @@ date: "2024-09-27"
 
 This assignment has three questions:  
 
-1. in a class of 35 students, Dr. J bets $1 against student's $1  that at least 2 students have the same birthday, month, day.
-Find the probability thatat least two student have the same birthday.  If 26 students in the class take the bet how much is Dr. J expected to win/lose.   How much should Dr. J wager against the student's $1 to make this a fair bet?
+In a class of 35 students, Dr. J bets $1 against student's $1  that at least 2 students have the same birthday, month, day.
+
+1. Find the propability that at least two students have the same birthday. If 26 students in the class take the bet how much is Dr.J expected to win/lose. How should Dr.J Wager against the students $1 to make this a fair bet?
+
+The propability of at least two students having the same birthday is 0.81. Dr. Jay is expected to win 16.17 dollars. Dr. J should wager exactly 4.3 dollars against the students to make a fair bet.
 
 2. Assume class size is 26 instead of 35.  With the same bet ($1 ot $1) what is the probability Dr. J wins the bet now.  If 20 of the 26 students make the bet, what is Dr. J's expected profit/loss?
 
+With the same bet, the probability if Dr. J winning is now 0.61. Expected profit for Dr.J if 20 students bet is $4.43.
+
 3. What size class (how many students) makes the $1 againt $1 a fair bet?
+
+The closest amount of students to make the bet fair, $1 to $1, is 23 students with the average profit being close to 0.
+
+## Question 1
+```{r setup, include=FALSE}
+# Load required libraries
+library(ggplot2)
+```
+
+```{r simulation, echo=TRUE}
+# Function to simulate the birthday problem
+simulate_birthday_problem <- function(class_size) {
+  birthdays <- sample(1:365, class_size, replace = TRUE)
+  has_duplicate <- length(birthdays) != length(unique(birthdays))
+  return(as.integer(has_duplicate))
+}
+
+# Set parameters
+num_simulations <- 100
+class_size <- 35
+results <- numeric(num_simulations)
+
+# Run simulations
+for (i in 1:num_simulations) {
+  results[i] <- simulate_birthday_problem(class_size)
+}
+
+# Calculate the probability of at least one shared birthday
+probabilities <- cumsum(results) / (1:num_simulations)
+```
+
+```{r histogram, echo=TRUE}
+# Plot histogram of probabilities
+histogram_plot <- ggplot(data.frame(probabilities), aes(x = probabilities)) +
+  geom_histogram(binwidth = 0.05, color = "black", fill = "lightblue") +
+  labs(title = "Histogram of Probabilities",
+       x = "Probability",
+       y = "Frequency") +
+  theme_minimal()
+
+print(histogram_plot)
+```
+
+```{r summary, echo=TRUE}
+# Calculate and print the mean probability
+mean_probability <- mean(probabilities)
+cat("mean =", mean_probability, "\n")
+
+# Calculate 95% confidence interval
+conf_interval <- quantile(probabilities, c(0.025, 0.975))
+cat("95% Confidence Interval:", conf_interval, "\n")
+```
+
+
+
+```{r}
+EV= mean_probability*26-(1-mean_probability)*26
+print(paste("ev=",EV))
+```
+
+```{r}
+FAIR=(mean_probability)/(1-mean_probability) 
+print(paste("fairbet=",FAIR))
+```
+
+The propability of at least two students having the same birthday is 0.81. Dr. Jay is expected to win 16.17 dollars. Dr. J should wager exactly 4.3 dollars against the students to make a fair bet.
+
+
+## Question 2
+
+```{r}
+# Function to simulate the birthday problem
+simulate_birthday_problem <- function(class_size= 26) {
+  birthdays <- sample(1:365, class_size, replace = TRUE)
+  has_duplicate <- length(birthdays) != length(unique(birthdays))
+  return(as.integer(has_duplicate))
+}
+
+# Set parameters
+num_simulations <- 100
+class_size <- 26
+results <- numeric(num_simulations)
+
+# Run simulations
+for (i in 1:num_simulations) {
+  results[i] <- simulate_birthday_problem(class_size)
+}
+
+# Calculate the probability of at least one shared birthday
+probabilities <- cumsum(results) / (1:num_simulations)
+```
+
+```{r, echo=TRUE}
+# Calculate and print the mean probability
+mean_probability <- mean(probabilities)
+cat("mean =", mean_probability, "\n")
+   
+# Calculate 95% confidence interval
+conf_interval <- quantile(probabilities, c(0.025, 0.975))
+cat("95% Confidence Interval:", conf_interval, "\n")
+```
+
+```{r}
+EV= mean_probability*20-(1-mean_probability)*20
+print(paste("ev=",EV))
+```
+
+With the same bet, the probability if Dr. J winning is now 0.61. Expected profit for Dr.J if 20 students bet is $4.43.
+
+##Question 3
+
+```{r}
+# Function to simulate the birthday problem
+simulate_birthday_problem <- function(class_size= 23) {
+  birthdays <- sample(1:365, class_size, replace = TRUE)
+  has_duplicate <- length(birthdays) != length(unique(birthdays))
+  return(as.integer(has_duplicate))
+}
+
+# Set parameters
+num_simulations <- 100
+class_size <- 23
+results <- numeric(num_simulations)
+
+# Run simulations
+for (i in 1:num_simulations) {
+  results[i] <- simulate_birthday_problem(class_size)
+}
+
+# Calculate the probability of at least one shared birthday
+probabilities <- cumsum(results) / (1:num_simulations)
+```
+
+```{r}
+# Calculate and print the mean probability
+mean_probability <- mean(probabilities)
+cat("mean =", mean_probability, "\n")
+   
+# Calculate 95% confidence interval
+conf_interval <- quantile(probabilities, c(0.025, 0.975))
+cat("95% Confidence Interval:", conf_interval, "\n")
+```
+
+```{r}
+EV= mean_probability*20-(1-mean_probability)*20
+print(paste("ev=",EV))
+```
+
+The closest amount of students to make the bet fair, ($1 to $1), is 23 students with the average profit being close to 0.
